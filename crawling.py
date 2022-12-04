@@ -1,7 +1,15 @@
 import requests
 from bs4 import BeautifulSoup
+import csv
 
 # range를 이용하면 0부터 인덱스가 시작되므로 page_num에 1을 더해준 url을 이용
+filename = 'festival_list.csv'
+f = open(filename, 'w', encoding='utf-8-sig', newline='')
+writer = csv.writer(f)
+
+titles = ['festivalId', 'festival_title', 'festival_desc', 'festival_image', 'festival_region', 'festival_place', 'festival_price', 'festival_period']
+writer.writerow(titles)
+
 festival_id = 1
 for page_num in range(8):
     url = f'https://www.mcst.go.kr/kor/s_culture/festival/festivalList.jsp?pCurrentPage={page_num+1}'
@@ -34,7 +42,7 @@ for page_num in range(8):
                 price = item.select_one('dl > dd:nth-child(12)').text
                 
                 festival_data = [festival_id, title, desc, image, region, place, price, period]
-                print(festival_data)
+                writer.writerow(festival_data)
             festival_id += 1
                 
                 
@@ -61,5 +69,5 @@ for page_num in range(8):
                 price = item.select_one('dl > dd:nth-child(12)').text
                 
                 festival_data = [festival_id, title, desc, image, region, place, price, period]
-                print(festival_data)
+                writer.writerow(festival_data)
             festival_id += 1
