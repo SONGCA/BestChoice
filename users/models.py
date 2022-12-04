@@ -41,6 +41,7 @@ class User(AbstractBaseUser):
     user_introduce = models.CharField(max_length=40, blank=True, null=True)
     user_profile_img = models.ImageField(blank=True, upload_to="profile_img/", default="profile_img/profile.jpeg", null=True)
     user_birth = models.DateField()
+    user_address = models.CharField(max_length=20, blank=True, null=True) #IntegerField와 CharField 중 어떤 방식이 나을지 논의 필요
 
     is_active = models.BooleanField(default=True)
     is_admin = models.BooleanField(default=False)
