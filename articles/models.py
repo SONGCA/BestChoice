@@ -3,15 +3,14 @@ from users.models import User
 
 # Create your models here.
 class Festival_Article(models.Model):
-    festival_title = models.CharField(max_length=40, default='')  #축제 제목
+    festival_title = models.CharField(max_length=50, default='')  #축제 제목
     festival_desc = models.TextField()  #축제 설명
-    festival_address = models.CharField(max_length=20)  #축제 장서 
-    festival_region = models.CharField(max_length=20)  #축제 지역
-    festival_date = models.CharField(max_length=30)  #축제 기간
-    festival_image = models.ImageField()  #축제 이미지
-    festival_price = models.IntegerField(default=0)  # 축제 요금
-    festival_created_at = models.DateTimeField(auto_now_add=True) # 축제 게시글 생성 시간
-    festival_updated_at = models.DateTimeField(auto_now= True) # 축제 게시글 수정 시간
+    festival_address = models.CharField(max_length=50)  #축제 장소
+    festival_region = models.CharField(max_length=50)  #축제 지역
+    festival_date = models.CharField(max_length=50)  #축제 기간
+    festival_image = models.CharField(max_length=100)  #축제 이미지
+    festival_price = models.CharField(max_length=30)  # 축제 요금
+    #festival_status는 추가할지 고려
     
 class Join_Article(models.Model):
     join_author = models.ForeignKey(User,  verbose_name="작성자", on_delete=models.CASCADE)  #모집 작성자
@@ -20,6 +19,7 @@ class Join_Article(models.Model):
     join_count = models.IntegerField(default=0)  #모집 인원
     join_desc = models.TextField()  #모집 설명
     join_period = models.DateTimeField()  #모집 마감일
+    join_status = models.BooleanField(default=False) # true일때 모집중, false 종료
     join_created_at = models.DateTimeField(auto_now_add=True) #모집 게시글 생성 시간
     join_updated_at = models.DateTimeField(auto_now= True) #모집 게시글 수정 시간
 

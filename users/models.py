@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import (
-    BaseUserManager, AbstractBaseUser
+    BaseUserManager, AbstractBaseUser, PermissionsMixin
 )
 # Create your models here.
 class UserManager(BaseUserManager):
@@ -27,7 +27,7 @@ class UserManager(BaseUserManager):
         user.save(using=self._db)
         return user
 
-class User(AbstractBaseUser):
+class User(AbstractBaseUser, PermissionsMixin):
     GENDER_CHOICES = (
         (0, 'male'),
         (1, 'female'),
