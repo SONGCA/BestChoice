@@ -25,10 +25,12 @@ def festival_loader():
                 festival_region = row[4]
                 festival_address = row[5]
                 festival_price = row[6]
-                festival_date = row[7]
+                festival_cost = row[7]
+                festival_date = row[8]
+                festival_start = row[9]
+                festival_end = row[10]
 
-
-                print(festival_title, festival_desc, festival_image, festival_region, festival_address, festival_price, festival_date)
+                print(festival_title, festival_desc, festival_image, festival_region, festival_address, festival_price, festival_cost, festival_date, festival_start, festival_end)
                 Festival_Article.objects.create(
                     festival_title = festival_title,
                     festival_desc = festival_desc,
@@ -36,7 +38,10 @@ def festival_loader():
                     festival_region = festival_region,
                     festival_address = festival_address,
                     festival_price = festival_price,
-                    festival_date = festival_date
+                    festival_cost = festival_cost,
+                    festival_date = festival_date,
+                    festival_start = festival_start,
+                    festival_end = festival_end
                     )
     print('PRODUCT DATA UPLOADED SUCCESSFULY!')
 

@@ -10,6 +10,9 @@ class Festival_Article(models.Model):
     festival_date = models.CharField(max_length=50)  #축제 기간
     festival_image = models.CharField(max_length=100)  #축제 이미지
     festival_price = models.CharField(max_length=30)  # 축제 요금
+    festival_cost = models.CharField(max_length=10)  # 무료 or 유료
+    festival_start = models.DateField()  #시작일
+    festival_end = models.DateField()  #종료일
     #festival_status는 추가할지 고려
     
 class Join_Article(models.Model):
@@ -29,3 +32,7 @@ class Comment(models.Model):
     comment_content= models.TextField() # 댓글 내용
     comment_created_at = models.DateTimeField(auto_now_add=True) # 댓글 작성시간
     comment_updated_at = models.DateTimeField(auto_now= True) # 댓글 수정시간
+    
+class Bookmark(models.Model):
+    bookmark_user = models.ForeignKey(User, on_delete=models.CASCADE)  # 북마크한 사용자
+    bookmark_festival = models.ForeignKey(Join_Article, on_delete=models.CASCADE)  # 북마크한 축제게시글
