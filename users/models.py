@@ -42,14 +42,14 @@ class User(AbstractBaseUser, PermissionsMixin):
     user_profile_img = models.ImageField(blank=True, upload_to="profile_img/", default="profile_img/profile.jpeg", null=True)
     user_birth = models.DateField(null=True)
     user_address = models.CharField(max_length=20, blank=True, null=True) #IntegerField와 CharField 중 어떤 방식이 나을지 논의 필요
-
+    
     is_active = models.BooleanField(default=True)
     is_admin = models.BooleanField(default=False)
 
     objects = UserManager()
 
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = []
+    REQUIRED_FIELDS = [user_nickname, user_phone, user_address]
 
     def __str__(self):
         return self.email
