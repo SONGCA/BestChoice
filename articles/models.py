@@ -36,3 +36,10 @@ class Comment(models.Model):
 class Bookmark(models.Model):
     bookmark_user = models.ForeignKey(User, on_delete=models.CASCADE)  # 북마크한 사용자
     bookmark_festival = models.ForeignKey(Join_Article, on_delete=models.CASCADE)  # 북마크한 축제게시글
+# 리뷰 게시글
+class Review(models.Model):
+    review_author = models.ForeignKey(User, verbose_name="작성자", on_delete=models.CASCADE)  #리뷰 작성자
+    review_title = models.CharField(max_length=20)  #리뷰 제목
+    review_desc = models.TextField()  #리뷰 설명
+    review_created_at = models.DateTimeField(auto_now_add=True) #모집 게시글 생성 시간
+    review_updated_at = models.DateTimeField(auto_now= True) #모집 게시글 수정 시간
