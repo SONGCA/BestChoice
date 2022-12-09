@@ -1,18 +1,17 @@
-from turtle import update
 from rest_framework import serializers
 from articles.models import Festival_Article, Review, Review_Comment
 
-# 게시글 리스트 serial
-class ArticleListSerializer(serializers.ModelSerializer):
+# 축제 리스트 serial
+class FestivalListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Festival_Article
-        fields = ("pk", "festival_title", "festival_image", "festival_region")
-        
-# 게시글 필터링 serial
-class ArticleFilterSerializer(serializers.ModelSerializer):
+        fields = ("pk", "festival_title", "festival_image", "festival_region", "festival_region")
+    
+# 축제 상세페이지 serial
+class FestivalSerializer(serializers.ModelSerializer): 
     class Meta:
         model = Festival_Article
-        fields = ("pk", "festival_title", "festival_image", "festival_region", "festival_cost")
+        fields = '__all__'
 
 # 리뷰 리스트 serial
 class ReviewSerializer(serializers.ModelSerializer):
@@ -26,7 +25,7 @@ class ReviewCreateSerializer(serializers.ModelSerializer):
         model = Review
         fields = ("review_title", "review_desc")
 
-# 댓글 리스트 serial
+# 리뷰 댓글 리스트 serial
 class ReviewCommentSerializer(serializers.ModelSerializer):
     review_user = serializers.SerializerMethodField()
 
@@ -37,7 +36,7 @@ class ReviewCommentSerializer(serializers.ModelSerializer):
         model = Review_Comment
         fields = '__all__'
 
-# 댓글 수정하기 serial
+# 리뷰 댓글 작성 serial
 class ReviewCommentCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Review_Comment
