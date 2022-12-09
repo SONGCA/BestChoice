@@ -3,11 +3,12 @@ from rest_framework.views import APIView
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.generics import get_object_or_404
-from articles.models import Festival_Article, Bookmark
+from articles.models import Festival_Article, Bookmark, Review, Review_Comment
 from users.models import User
 import random
 
-from articles.serializers import ArticleListSerializer, ArticleFilterSerializer, BookMarkSerializer
+
+from articles.serializers import FestivalListSerializer, FestivalSerializer, ReviewSerializer, ReviewCreateSerializer, ReviewCommentSerializer, ReviewCommentCreateSerializer, BookMarkSerializer
 
 # Create your views here.
 #추천축제게시글 불러오는 뷰
@@ -23,16 +24,16 @@ class RecommendView(APIView):
         for i in range(8):
             recommend_list.append(festivals[nums[i]])
         
-        serializer = ArticleListSerializer(recommend_list, many=True)
+        serializer = FestivalListSerializer(recommend_list, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-#전체축제게시글 불러오는 뷰
+#전체 축제게시글 불러오는 뷰
 class CheckView(APIView):
     # authentication_classes = [JWTAuthentication]
     
     def get(self, request):
         articles = Festival_Article.objects.all()
-        serializer = ArticleListSerializer(articles, many=True)
+        serializer = FestivalListSerializer(articles, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 region_arr = ["서울시", "부산시", "대구시", "인천시", "광주시", "대전시", "울산시", "세종시", "경기도", "강원도", "충청북도", "충청남도", "전라북도", "전라남도", "경상북도", "경상남도", "제주도"]
@@ -89,19 +90,25 @@ class OptionView(APIView):
             if not results.exists():
                 return Response({"message": "축제를 찾을 수 없습니다."}, status=status.HTTP_404_NOT_FOUND)
             elif results.exists():
-                serializer = ArticleFilterSerializer(results, many=True)
+                serializer = FestivalListSerializer(results, many=True)
                 return Response(serializer.data, status=status.HTTP_200_OK)  
         except:
             return Response({"message": "축제를 찾을 수 없습니다."}, status=status.HTTP_404_NOT_FOUND)
-        
+
+# 축제 상세 페이지 뷰
+class FestivalDetailView(APIView):
+    def get(self, request, festival_article_id):
+        festival = get_object_or_404(Festival_Article, id=festival_article_id)
+        serializer = FestivalSerializer(festival)
+        return Response(serializer.data, status=status.HTTP_200_OK)
     
-#축제게시글 북마크하는 뷰
+# 축제게시글 북마크 뷰
 class BookmarkView(APIView):
-    def post(self, request, festival_id):
+    def post(self, request, festival_article_id):
         #현재사용자 객체
         user = request.user.id
         #현재축제게시글 객체
-        article = get_object_or_404(Festival_Article, id=festival_id)
+        article = get_object_or_404(Festival_Article, id=festival_article_id)
         
         #현재 사용자와 해당 축제게시물에 대한 Bookmark db 보기
         bookmark = Bookmark.objects.filter(bookmark_user_id=user, bookmark_festival_id=article.id)
@@ -113,3 +120,85 @@ class BookmarkView(APIView):
         else:
             Bookmark.objects.create(bookmark_user_id=user, bookmark_festival_id = article.id)
             return Response({"message": "북마크가 되었습니다"}, status=status.HTTP_200_OK)
+
+#리뷰 작성 및 불러오기
+class ReviewView(APIView):
+    def get(self, request):
+        review = Review.objects.all()
+        serializer = ReviewSerializer(review, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
+    def post(self, request):
+        serializer = ReviewCreateSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save(review_author=request.user)
+            return Response(serializer.data, status.HTTP_200_OK)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+# 리뷰 상세보기/수정하기/삭제하기
+class ReviewDetailView(APIView):
+    def get(self, request, review_id):
+        review = get_object_or_404(Review, id=review_id)
+        serializer = ReviewSerializer(review)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def patch(self, request, review_id):
+        review = get_object_or_404(Review, id=review_id)
+        # 요청자가 게시글 작성자일 경우에만 수정 가능
+        if request.user == review.review_author:
+            serializer = ReviewCreateSerializer(review, data=request.data)
+            if serializer.is_valid():
+                serializer.save()  # 수정이기 때문에 user정보 불필요
+                return Response(serializer.data, status=status.HTTP_200_OK)
+            else:
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            return Response("권한이 없습니다.", status=status.HTTP_403_FORBIDDEN)
+
+    def delete(self, request, review_id):
+        review = get_object_or_404(Review, id=review_id)
+        if request.user == review.review_author:
+            review.delete()
+            return Response("삭제되었습니다.", status=status.HTTP_204_NO_CONTENT)
+        else:
+            return Response("권한이 없습니다.", status=status.HTTP_403_FORBIDDEN)
+
+
+# 댓글 전체 불러오기, 작성하기
+class ReviewCommentView(APIView):
+    def get(self, request, review_id):
+        review = get_object_or_404(Review, id=review_id)
+        comments = review.review_comment_set.all()
+        serializer = ReviewCommentSerializer(comments, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def post(self, request, review_id):
+        serializer = ReviewCommentCreateSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save(review_user=request.user, review_article_id=review_id)
+            return Response(serializer.data, status.HTTP_200_OK)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+# 댓글 수정하기, 삭제하기
+class ReviewCommentDetailView(APIView):
+    def put(self, request, review_id, review_comment_id):
+        review_comment = get_object_or_404(Review_Comment, id=review_comment_id)
+        if request.user == review_comment.review_user:
+            serializer = ReviewCommentCreateSerializer(review_comment, data=request.data)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data, status=status.HTTP_200_OK)
+            else:
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            return Response("권한이 없습니다!", status=status.HTTP_403_FORBIDDEN)
+    
+    def delete(self, request, review_id, review_comment_id):
+        review_comment = get_object_or_404(Review_Comment, id=review_comment_id)
+        if request.user == review_comment.review_user:
+            review_comment.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        else:
+            return Response("권한이 없습니다!", status=status.HTTP_403_FORBIDDEN)
