@@ -28,7 +28,7 @@ class RecommendView(APIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 #전체 축제게시글 불러오는 뷰
-class CheckView(APIView):
+class FestivalListView(APIView):
     # authentication_classes = [JWTAuthentication]
     
     def get(self, request):
@@ -39,7 +39,7 @@ class CheckView(APIView):
 region_arr = ["서울시", "부산시", "대구시", "인천시", "광주시", "대전시", "울산시", "세종시", "경기도", "강원도", "충청북도", "충청남도", "전라북도", "전라남도", "경상북도", "경상남도", "제주도"]
     
 #축제게시글 필터링해 불러오는 뷰    
-class OptionView(APIView):
+class FestivalFilterView(APIView):
     def get(self, request):
         
         #url의 param 값을 저장
