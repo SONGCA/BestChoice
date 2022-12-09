@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from articles.models import Festival_Article, Review, Review_Comment
+from articles.models import Festival_Article, Review, Review_Comment, Bookmark
 
 # 축제 리스트 serial
 class FestivalListSerializer(serializers.ModelSerializer):
@@ -13,6 +13,12 @@ class FestivalSerializer(serializers.ModelSerializer):
         model = Festival_Article
         fields = '__all__'
 
+# 게시글 북마크 serial        
+class BookMarkSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Bookmark
+        fields = ("pk", "bookmark_user", "bookmark_festival")
+        
 # 리뷰 리스트 serial
 class ReviewSerializer(serializers.ModelSerializer):
     class Meta:

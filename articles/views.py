@@ -4,9 +4,11 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.generics import get_object_or_404
 from articles.models import Festival_Article, Bookmark, Review, Review_Comment
+from users.models import User
 import random
 
-from articles.serializers import FestivalListSerializer, FestivalSerializer, ReviewSerializer, ReviewCreateSerializer, ReviewCommentSerializer, ReviewCommentCreateSerializer
+
+from articles.serializers import FestivalListSerializer, FestivalSerializer, ReviewSerializer, ReviewCreateSerializer, ReviewCommentSerializer, ReviewCommentCreateSerializer, BookMarkSerializer
 
 # Create your views here.
 #추천축제게시글 불러오는 뷰
@@ -102,23 +104,22 @@ class FestivalDetailView(APIView):
     
 # 축제게시글 북마크 뷰
 class BookmarkView(APIView):
-    def post(self, request, article_id):
-        #현재 사용자
+    def post(self, request, festival_article_id):
+        #현재사용자 객체
         user = request.user.id
-        #축제게시물 가져오기
-        article = get_object_or_404(Festival_Article, id=article_id)
+        #현재축제게시글 객체
+        article = get_object_or_404(Festival_Article, id=festival_article_id)
+        
         #현재 사용자와 해당 축제게시물에 대한 Bookmark db 보기
-        bookmark = Bookmark.objects.filter(bookmark_user=user, bookmark_festival=article)
+        bookmark = Bookmark.objects.filter(bookmark_user_id=user, bookmark_festival_id=article.id)
+    
         # 존재한다면
         if bookmark.exists():
             bookmark.delete()  # 삭제하고
             return Response({"message": "북마크가 취소되었습니다"}, status=status.HTTP_204_NO_CONTENT)
-        
-        Bookmark.objects.create(
-            bookmark_user = request.user,
-            bookmark_festival = article
-        )
-        return Response({"message": "북마크가 되었습니다"}, status=status.HTTP_200_OK)
+        else:
+            Bookmark.objects.create(bookmark_user_id=user, bookmark_festival_id = article.id)
+            return Response({"message": "북마크가 되었습니다"}, status=status.HTTP_200_OK)
 
 #리뷰 작성 및 불러오기
 class ReviewView(APIView):
