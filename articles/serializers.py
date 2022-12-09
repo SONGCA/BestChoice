@@ -1,6 +1,6 @@
 from turtle import update
 from rest_framework import serializers
-from articles.models import Festival_Article
+from articles.models import Festival_Article, Bookmark
 
 # 게시글 리스트 serial
 class ArticleListSerializer(serializers.ModelSerializer):
@@ -13,3 +13,9 @@ class ArticleFilterSerializer(serializers.ModelSerializer):
     class Meta:
         model = Festival_Article
         fields = ("pk", "festival_title", "festival_image", "festival_region", "festival_cost")
+
+# 게시글 북마크 serial        
+class BookMarkSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Bookmark
+        fields = ("pk", "bookmark_user", "bookmark_festival")
