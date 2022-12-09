@@ -92,7 +92,14 @@ class OptionView(APIView):
                 return Response(serializer.data, status=status.HTTP_200_OK)  
         except:
             return Response({"message": "축제를 찾을 수 없습니다."}, status=status.HTTP_404_NOT_FOUND)
-        
+
+# 축제 상세 페이지 뷰
+class FestivalDetailView(APIView):
+    def get(self, request, festival_article_id):
+        festival = get_object_or_404(Festival_Article, id=festival_article_id)
+        serializer = FestivalSerializer(festival)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
 # 축제게시글 북마크 뷰
 class BookmarkView(APIView):
     def post(self, request, article_id):
