@@ -5,7 +5,6 @@ from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
 # 회원가입과 회원정보수정에서 사용할 serial
 class UserProfileSerializer(serializers.ModelSerializer):
-    
     class Meta:
         model = User
         fields = "__all__"
@@ -13,7 +12,7 @@ class UserProfileSerializer(serializers.ModelSerializer):
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ("email", "user_nickname", "user_phone", "user_address")
+        fields = "__all__"
 
     def create(self, validated_data):
         user = super().create(validated_data)
