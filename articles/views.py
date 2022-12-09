@@ -6,7 +6,7 @@ from rest_framework.generics import get_object_or_404
 from articles.models import Festival_Article, Bookmark, Review, Review_Comment
 import random
 
-from articles.serializers import ArticleListSerializer, ArticleFilterSerializer, ReviewSerializer, ReviewCreateSerializer, ReviewCommentSerializer, ReviewCommentCreateSerializer
+from articles.serializers import FestivalListSerializer, FestivalSerializer, ReviewSerializer, ReviewCreateSerializer, ReviewCommentSerializer, ReviewCommentCreateSerializer
 
 # Create your views here.
 #추천축제게시글 불러오는 뷰
@@ -22,16 +22,16 @@ class RecommendView(APIView):
         for i in range(8):
             recommend_list.append(festivals[nums[i]])
         
-        serializer = ArticleListSerializer(recommend_list, many=True)
+        serializer = FestivalListSerializer(recommend_list, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-#전체축제게시글 불러오는 뷰
+#전체 축제게시글 불러오는 뷰
 class CheckView(APIView):
     # authentication_classes = [JWTAuthentication]
     
     def get(self, request):
         articles = Festival_Article.objects.all()
-        serializer = ArticleListSerializer(articles, many=True)
+        serializer = FestivalListSerializer(articles, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 region_arr = ["서울시", "부산시", "대구시", "인천시", "광주시", "대전시", "울산시", "세종시", "경기도", "강원도", "충청북도", "충청남도", "전라북도", "전라남도", "경상북도", "경상남도", "제주도"]
@@ -88,13 +88,12 @@ class OptionView(APIView):
             if not results.exists():
                 return Response({"message": "축제를 찾을 수 없습니다."}, status=status.HTTP_404_NOT_FOUND)
             elif results.exists():
-                serializer = ArticleFilterSerializer(results, many=True)
+                serializer = FestivalListSerializer(results, many=True)
                 return Response(serializer.data, status=status.HTTP_200_OK)  
         except:
             return Response({"message": "축제를 찾을 수 없습니다."}, status=status.HTTP_404_NOT_FOUND)
         
-    
-#축제게시글 북마크하는 뷰
+# 축제게시글 북마크 뷰
 class BookmarkView(APIView):
     def post(self, request, article_id):
         #현재 사용자
