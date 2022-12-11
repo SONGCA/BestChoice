@@ -10,6 +10,9 @@ import random
 
 from articles.serializers import FestivalListSerializer, FestivalSerializer, ReviewSerializer, ReviewCreateSerializer, ReviewCommentSerializer, ReviewCommentCreateSerializer, BookMarkSerializer
 
+userregion_arr = [""]
+region_arr = ["서울시", "부산시", "대구시", "인천시", "광주시", "대전시", "울산시", "세종시", "경기도", "강원도", "충청북도", "충청남도", "전라북도", "전라남도", "경상북도", "경상남도", "제주도"]
+
 # Create your views here.
 #추천축제게시글 불러오는 뷰
 class RecommendView(APIView):
@@ -18,7 +21,7 @@ class RecommendView(APIView):
         print(userid)
         userregion = userid.user_address  #사용자의 주소(선호지역? 경기도)
         print(userregion)
-        festivals = Festival_Article.objects.all().filter(festival_region__contains=userregion)  #추천받고 싶은 지역 기준                                           
+        festivals = Festival_Article.objects.all().filter(festival_region__contains=region_arr[int(userregion)-1])  #추천받고 싶은 지역 기준                                           
         recommend_list = []
         nums = random.sample(range(0, len(festivals)), 8)  # 랜덤한 8개 숫자 뽑기
         for i in range(8):
@@ -36,7 +39,6 @@ class FestivalListView(APIView):
         serializer = FestivalListSerializer(articles, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-region_arr = ["서울시", "부산시", "대구시", "인천시", "광주시", "대전시", "울산시", "세종시", "경기도", "강원도", "충청북도", "충청남도", "전라북도", "전라남도", "경상북도", "경상남도", "제주도"]
     
 #축제게시글 필터링해 불러오는 뷰    
 class FestivalFilterView(APIView):
