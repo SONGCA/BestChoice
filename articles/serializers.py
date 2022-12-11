@@ -5,7 +5,7 @@ from articles.models import Festival_Article, Review, Review_Comment, Bookmark
 class FestivalListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Festival_Article
-        fields = ("pk", "festival_title", "festival_image", "festival_region", "festival_region")
+        fields = ("pk", "festival_title", "festival_desc", "festival_image", "festival_region")
     
 # 축제 상세페이지 serial
 class FestivalSerializer(serializers.ModelSerializer): 
