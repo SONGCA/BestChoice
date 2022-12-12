@@ -126,7 +126,7 @@ class BookmarkView(APIView):
 #리뷰 작성 및 불러오기
 class ReviewView(APIView):
     def get(self, request):
-        review = Review.objects.all()
+        review = Review.objects.all().order_by("-review_created_at")
         serializer = ReviewSerializer(review, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
     
@@ -142,6 +142,8 @@ class ReviewView(APIView):
 class ReviewDetailView(APIView):
     def get(self, request, review_id):
         review = get_object_or_404(Review, id=review_id)
+        review.count = review.count + 1
+        review.save()
         serializer = ReviewSerializer(review)
         return Response(serializer.data, status=status.HTTP_200_OK)
 

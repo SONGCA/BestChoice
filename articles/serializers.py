@@ -21,6 +21,11 @@ class BookMarkSerializer(serializers.ModelSerializer):
         
 # 리뷰 리스트 serial
 class ReviewSerializer(serializers.ModelSerializer):
+    review_author = serializers.SerializerMethodField()
+
+    def get_review_author(self, obj):
+        return obj.review_author.user_nickname
+        
     class Meta:
         model = Review
         fields = '__all__'
@@ -29,7 +34,7 @@ class ReviewSerializer(serializers.ModelSerializer):
 class ReviewCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Review
-        fields = ("review_title", "review_desc")
+        fields = ("review_title", "review_desc", 'image')
 
 # 리뷰 댓글 리스트 serial
 class ReviewCommentSerializer(serializers.ModelSerializer):
@@ -41,6 +46,7 @@ class ReviewCommentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Review_Comment
         fields = '__all__'
+
 
 # 리뷰 댓글 작성 serial
 class ReviewCommentCreateSerializer(serializers.ModelSerializer):
