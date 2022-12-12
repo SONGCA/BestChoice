@@ -3,12 +3,12 @@ from rest_framework.views import APIView
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.generics import get_object_or_404
-from articles.models import Festival_Article, Bookmark, Review, Review_Comment
+from articles.models import Festival_Article, Bookmark, Review, Review_Comment, Join_Article, Comment
 from users.models import User
 import random
 
 
-from articles.serializers import FestivalListSerializer, FestivalSerializer, ReviewSerializer, ReviewCreateSerializer, ReviewCommentSerializer, ReviewCommentCreateSerializer, BookMarkSerializer
+from articles.serializers import FestivalListSerializer, JoinDetailSerializer, JoinCommentCreateSerializer, JoinCommentSerializer, JoinListSerializer, FestivalSerializer, ReviewSerializer, ReviewCreateSerializer, ReviewCommentSerializer, ReviewCommentCreateSerializer, JoinCreateSerializer, BookMarkSerializer
 
 userregion_arr = [""]
 region_arr = ["서울시", "부산시", "대구시", "인천시", "광주시", "대전시", "울산시", "세종시", "경기도", "강원도", "충청북도", "충청남도", "전라북도", "전라남도", "경상북도", "경상남도", "제주도"]
@@ -194,3 +194,82 @@ class ReviewCommentDetailView(APIView):
             return Response(status=status.HTTP_204_NO_CONTENT)
         else:
             return Response("권한이 없습니다!", status=status.HTTP_403_FORBIDDEN)
+
+class JoinArticleCreate(APIView):
+    def get(self, request):
+        join = Join_Article.objects.all()
+        serializer = JoinListSerializer(join, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
+    def post(self, request, festival_article_id):
+        serializer = JoinCreateSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save(join_author_id=request.user.id, join_festival_id=festival_article_id)
+            return Response(serializer.data, status.HTTP_200_OK)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class JoinArticleDetailView(APIView):
+    def get(self, request, join_id):
+        joinview = get_object_or_404(Join_Article, id=join_id)
+        serializer = JoinDetailSerializer(joinview)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def patch(self, request, join_id):
+        joinpatch = get_object_or_404(Join_Article, id=join_id)
+        # 요청자가 게시글 작성자일 경우에만 수정 가능
+        if request.user == joinpatch.join_author:
+            serializer = JoinCreateSerializer(joinpatch, data=request.data)
+            if serializer.is_valid():
+                serializer.save()  # 수정이기 때문에 user정보 불필요
+                return Response(serializer.data, status=status.HTTP_200_OK)
+            else:
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            return Response("권한이 없습니다.", status=status.HTTP_403_FORBIDDEN)
+
+    def delete(self, request, join_id):
+        joindelete = get_object_or_404(Join_Article, id=join_id)
+        if request.user == joindelete.join_author:
+            joindelete.delete()
+            return Response("삭제되었습니다.", status=status.HTTP_204_NO_CONTENT)
+        else:
+            return Response("권한이 없습니다.", status=status.HTTP_403_FORBIDDEN)
+
+class JoinCommentView(APIView):
+    def get(self, request, join_id):
+        joincomment = get_object_or_404(Join_Article, id=join_id)
+        comments = joincomment.comments.all()
+        serializer = JoinCommentSerializer(comments, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def post(self, request, join_id):
+        serializer = JoinCommentCreateSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save(comment_user_id=request.user.id, comment_article_id=join_id)
+            return Response(serializer.data, status.HTTP_200_OK)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class JoinCommentDetailView(APIView):
+    def put(self, request, join_id, join_comment_id):
+        join_comment = get_object_or_404(Comment, id=join_comment_id)
+        if request.user == join_comment.comment_user:
+            serializer = JoinCommentCreateSerializer(join_comment, data=request.data)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data, status=status.HTTP_200_OK)
+            else:
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            return Response("권한이 없습니다!", status=status.HTTP_403_FORBIDDEN)
+    
+    def delete(self, request, join_id, join_comment_id):
+        join_comment = get_object_or_404(Comment, id=join_comment_id)
+        if request.user == join_comment.comment_user:
+            join_comment.delete()
+            return Response("삭제되었습니다.", status=status.HTTP_204_NO_CONTENT)
+        else:
+            return Response("권한이 없습니다!", status=status.HTTP_403_FORBIDDEN)
+            
