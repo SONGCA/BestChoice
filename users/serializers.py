@@ -6,6 +6,7 @@ from articles.serializers import BookMarkSerializer, ReviewSerializer
 
 # 회원가입과 회원정보수정에서 사용할 serial
 class UserProfileSerializer(serializers.ModelSerializer):
+    bookmark_set = BookMarkSerializer(many=True)
     #승연님이 만드신거 리크룻 
     class Meta:
         model = User
@@ -41,4 +42,3 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
 
         return token
     
-#북
