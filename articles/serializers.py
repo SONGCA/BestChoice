@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from articles.models import Festival_Article, Review, Review_Comment, Bookmark, Join_Article, Comment
+from articles.models import Festival_Article, Review, Review_Comment, Bookmark, Join_Article, Comment, Recruit_Article
 
 # 축제 리스트 serial
 class FestivalListSerializer(serializers.ModelSerializer):
@@ -21,18 +21,6 @@ class FestivalSerializer(serializers.ModelSerializer):
         model = Festival_Article
         fields = ("pk", "festival_title", "festival_desc", "festival_image", "festival_region", "festival_cost", "festival_address", "festival_start", "festival_end", "bookmarks")
                 
-# 리뷰 리스트 serial
-class ReviewSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Review
-        fields = '__all__'
-
-# 리뷰 작성, 수정 serial
-class ReviewCreateSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Review
-        fields = ("review_title", "review_desc")
-
 # 리뷰 댓글 리스트 serial
 class ReviewCommentSerializer(serializers.ModelSerializer):
     review_user = serializers.SerializerMethodField()
@@ -43,13 +31,30 @@ class ReviewCommentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Review_Comment
         fields = '__all__'
-
+        
 # 리뷰 댓글 작성 serial
 class ReviewCommentCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Review_Comment
         fields= ("review_comment",)
+          
+# 리뷰 작성, 수정 serial
+class ReviewCreateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Review
+        fields = ("review_title", "review_desc", "image")
 
+# 리뷰 리스트 serial
+class ReviewSerializer(serializers.ModelSerializer):
+    review_author = serializers.SerializerMethodField()
+    review_comment = ReviewCommentSerializer(many=True)
+    
+    def get_review_author(self, obj):
+        return obj.review_author.user_nickname
+    
+    class Meta:
+        model = Review
+        fields = '__all__'
 
 #모집게시글 생성/수정 serial
 class JoinCreateSerializer(serializers.ModelSerializer):
@@ -95,28 +100,8 @@ class JoinDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = Join_Article
         fields = "__all__"
-
-
-
-
-# class CommentSerializer(serializers.ModelSerializer):
-#     user = serializers.SerializerMethodField()
-
-#     def get_user(self, obj):
-#         return obj.user.nickname
-    
-#     class Meta:
-#         model = Comment
-#         fields = '__all__'
-
-
-# class ArticleSerializer(serializers.ModelSerializer):
-#     user = serializers.SerializerMethodField()
-#     comment_set = CommentSerializer(many=True)
-    
-#     def get_user(self, obj):
-#         return obj.user.email
-    
-#     class Meta:
-#         model = Article
-#         fields = '__all__'
+        
+class RecruitSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Recruit_Article
+        fields = "__all__"

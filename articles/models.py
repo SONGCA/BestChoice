@@ -24,8 +24,8 @@ class Join_Article(models.Model):
     join_title = models.CharField(max_length=20)  #모집 제목
     join_count = models.IntegerField(default=1)  #모집 인원
     join_desc = models.TextField()  #모집 설명
-    join_period = models.DateField()  #모집 마감일
-    join_status = models.BooleanField(default=False) # true일때 모집중, false 종료
+    join_period = models.DateTimeField()  #모집 마감일
+    join_status = models.BooleanField(default=True) # true일때 모집중, false 종료
     join_created_at = models.DateTimeField(auto_now_add=True) #모집 게시글 생성 시간
     join_updated_at = models.DateTimeField(auto_now= True) #모집 게시글 수정 시간
 
@@ -33,7 +33,6 @@ class Join_Article(models.Model):
 class Recruit_Article(models.Model):
     recruit_user = models.ForeignKey(User, verbose_name="작성자", on_delete=models.CASCADE)  #신청게시글 작성자
     recruit_join = models.ForeignKey(Join_Article, verbose_name="모집", on_delete=models.CASCADE)  #신청게시글 해당 모집글
-    recruit_introduce = models.TextField()  #신청게시글 자기소개
     recruit_status = models.BooleanField(default=False)   #신청게시글 상태(true이면 확정, false이면 미정)
     recruit_time = models.DateTimeField(auto_now_add=True)  #신청게시글 생성시간
 
@@ -57,14 +56,15 @@ class Review(models.Model):
     review_author = models.ForeignKey(User, verbose_name="작성자", on_delete=models.CASCADE)  #리뷰 작성자
     review_title = models.CharField(max_length=20)  #리뷰 제목
     review_desc = models.TextField()  #리뷰 설명
-    review_created_at = models.DateTimeField(auto_now_add=True) #모집 게시글 생성 시간
-    review_updated_at = models.DateTimeField(auto_now= True) #모집 게시글 수정 시간
+    review_created_at = models.DateTimeField(auto_now_add=True) #리뷰 게시글 생성 시간
+    review_updated_at = models.DateTimeField(auto_now= True) #리뷰 게시글 수정 시간
+    image = models.ImageField(blank=False, null=True)
+    count = models.PositiveIntegerField(default=0)
 
-
-#리뷰 게시글 댓글 모델
+# 리뷰 게시글 댓글 모델
 class Review_Comment(models.Model):
     review_user = models.ForeignKey(User, on_delete=models.CASCADE) # 리뷰 댓글 작성자
-    review_article = models.ForeignKey(Review, on_delete=models.CASCADE) # 리뷰 모집 게시글
+    review_article = models.ForeignKey(Review, on_delete=models.CASCADE, related_name='review_comment') # 리뷰 모집 게시글
     review_comment= models.TextField() # 댓글 내용
     review_comment_created_at = models.DateTimeField(auto_now_add=True) # 댓글 작성시간
     review_comment_updated_at = models.DateTimeField(auto_now= True) # 댓글 수정시간
