@@ -116,7 +116,7 @@ class BookmarkView(APIView):
 #리뷰 작성 및 불러오기
 class ReviewView(APIView):
     def get(self, request):
-        review = Review.objects.all()
+        review = Review.objects.all().order_by("-review_created_at")
         serializer = ReviewSerializer(review, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
     
@@ -132,9 +132,11 @@ class ReviewView(APIView):
 class ReviewDetailView(APIView):
     def get(self, request, review_id):
         review = get_object_or_404(Review, id=review_id)
+        review.count = review.count + 1
+        review.save()
         serializer = ReviewSerializer(review)
         return Response(serializer.data, status=status.HTTP_200_OK)
-
+    
     def patch(self, request, review_id):
         review = get_object_or_404(Review, id=review_id)
         # 요청자가 게시글 작성자일 경우에만 수정 가능
@@ -147,7 +149,7 @@ class ReviewDetailView(APIView):
                 return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         else:
             return Response("권한이 없습니다.", status=status.HTTP_403_FORBIDDEN)
-
+        
     def delete(self, request, review_id):
         review = get_object_or_404(Review, id=review_id)
         if request.user == review.review_author:
@@ -164,7 +166,7 @@ class ReviewCommentView(APIView):
         comments = review.review_comment_set.all()
         serializer = ReviewCommentSerializer(comments, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
-
+    
     def post(self, request, review_id):
         serializer = ReviewCommentCreateSerializer(data=request.data)
         if serializer.is_valid():
@@ -175,8 +177,8 @@ class ReviewCommentView(APIView):
 
 # 댓글 수정하기, 삭제하기
 class ReviewCommentDetailView(APIView):
-    def put(self, request, review_id, review_comment_id):
-        review_comment = get_object_or_404(Review_Comment, id=review_comment_id)
+    def put(self, request, review_id, comment_id):
+        review_comment = get_object_or_404(Review_Comment, id=comment_id)
         if request.user == review_comment.review_user:
             serializer = ReviewCommentCreateSerializer(review_comment, data=request.data)
             if serializer.is_valid():
@@ -186,9 +188,9 @@ class ReviewCommentDetailView(APIView):
                 return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         else:
             return Response("권한이 없습니다!", status=status.HTTP_403_FORBIDDEN)
-    
-    def delete(self, request, review_id, review_comment_id):
-        review_comment = get_object_or_404(Review_Comment, id=review_comment_id)
+        
+    def delete(self, request, review_id, comment_id):
+        review_comment = get_object_or_404(Review_Comment, id=comment_id)
         if request.user == review_comment.review_user:
             review_comment.delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
