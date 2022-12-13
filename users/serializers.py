@@ -1,10 +1,12 @@
 from rest_framework import serializers
 from users.models import User
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+from articles.serializers import BookMarkSerializer, ReviewSerializer
 
 
 # 회원가입과 회원정보수정에서 사용할 serial
 class UserProfileSerializer(serializers.ModelSerializer):
+    #승연님이 만드신거 리크룻 
     class Meta:
         model = User
         fields = "__all__"
@@ -38,3 +40,5 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
         token['email'] = user.email
 
         return token
+    
+#북
