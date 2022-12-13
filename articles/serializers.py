@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from articles.models import Festival_Article, Review, Review_Comment, Bookmark
+from articles.models import Festival_Article, Review, Review_Comment, Bookmark, Join_Article, Comment
 
 # 축제 리스트 serial
 class FestivalListSerializer(serializers.ModelSerializer):
@@ -49,3 +49,64 @@ class ReviewCommentCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Review_Comment
         fields= ("review_comment",)
+
+
+#모집게시글 생성/수정 serial
+class JoinCreateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Join_Article
+        fields = ("join_title", "join_count", "join_desc", "join_period",)
+
+class JoinListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Join_Article
+        fields = "__all__"
+class JoinCommentSerializer(serializers.ModelSerializer):
+    comment_user = serializers.SerializerMethodField()
+
+    def get_comment_user(self, obj):
+        return obj.comment_user.user_nickname
+    class Meta:
+        model = Comment
+        fields = "__all__"
+
+class JoinCommentCreateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Comment
+        fields = ("comment_content",)
+
+class JoinDetailSerializer(serializers.ModelSerializer):
+    join_author = serializers.SerializerMethodField()
+    comments = JoinCommentSerializer(many=True)
+
+    def get_join_author(self, obj):
+        return obj.join_author.user_nickname
+    
+    class Meta:
+        model = Join_Article
+        fields = "__all__"
+
+
+
+
+# class CommentSerializer(serializers.ModelSerializer):
+#     user = serializers.SerializerMethodField()
+
+#     def get_user(self, obj):
+#         return obj.user.nickname
+    
+#     class Meta:
+#         model = Comment
+#         fields = '__all__'
+
+
+# class ArticleSerializer(serializers.ModelSerializer):
+#     user = serializers.SerializerMethodField()
+#     comment_set = CommentSerializer(many=True)
+    
+#     def get_user(self, obj):
+#         return obj.user.email
+    
+#     class Meta:
+#         model = Article
+#         fields = '__all__'
