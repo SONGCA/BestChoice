@@ -10,6 +10,7 @@ urlpatterns = [
     path('festival/<int:festival_article_id>/createjoin/', views.JoinArticleCreate.as_view(), name='join_create'),
     path('festival/join/', views.JoinArticleCreate.as_view(), name='join_list_view'),
     path('festival/join/<int:join_id>/', views.JoinArticleDetailView.as_view(), name='join_detail_view'),
+    path('festival/join/<int:join_id>/recruit/', views.RecruitArticleView.as_view(), name='recruit_view'),
     path('festival/join/<int:join_id>/comment/', views.JoinCommentView.as_view(), name='join_comment_view'),
     path('festival/join/<int:join_id>/comment/<int:join_comment_id>/', views.JoinCommentDetailView.as_view(), name='join_comment_detail_view'),
     path('review/', views.ReviewView.as_view(), name='review_view'),
