@@ -3,13 +3,12 @@ from rest_framework.views import APIView
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.generics import get_object_or_404
-from articles.models import Festival_Article, Bookmark, Review, Review_Comment, Join_Article, Comment
+from articles.models import Festival_Article, Bookmark, Review, Review_Comment, Join_Article, Comment, Recruit_Article
 from users.models import User
 import random
 
 
-from articles.serializers import FestivalListSerializer, JoinDetailSerializer, JoinCommentCreateSerializer, JoinCommentSerializer, JoinListSerializer, FestivalSerializer, ReviewSerializer, ReviewCreateSerializer, ReviewCommentSerializer, ReviewCommentCreateSerializer, JoinCreateSerializer, BookMarkSerializer
-
+from articles.serializers import FestivalListSerializer, JoinDetailSerializer, JoinCommentCreateSerializer, JoinCommentSerializer, JoinListSerializer, FestivalSerializer, ReviewSerializer, ReviewCreateSerializer, ReviewCommentSerializer, ReviewCommentCreateSerializer, JoinCreateSerializer, BookMarkSerializer, RecruitSerializer
 userregion_arr = [""]
 region_arr = ["서울시", "부산시", "대구시", "인천시", "광주시", "대전시", "울산시", "세종시", "경기도", "강원도", "충청북도", "충청남도", "전라북도", "전라남도", "경상북도", "경상남도", "제주도"]
 
@@ -274,4 +273,78 @@ class JoinCommentDetailView(APIView):
             return Response("삭제되었습니다.", status=status.HTTP_204_NO_CONTENT)
         else:
             return Response("권한이 없습니다!", status=status.HTTP_403_FORBIDDEN)
-            
+        
+        
+
+# 신청게시글 
+class RecruitArticleView(APIView):
+    # 본인이 작성한(recruit_user_id가 사용자인) recruit 게시글 상태보기
+    def get(self, request):
+        user = request.user.id  #현재 사용자
+        recruit = Recruit_Article.objects.filter(recruit_user_id=user)
+        serializer = RecruitSerializer(recruit, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+        
+        
+    # 신청게시글 생성 메서드
+    def post(self, request, join_id):
+        #현재사용자 객체
+        user = request.user.id
+        # #현재축제게시글 객체
+        # joinarticle = get_object_or_404(Join_Article, id=join_id)
+        
+        #현재 사용자와 해당 축제게시물에 대한 Bookmark db 보기
+        recruit = Recruit_Article.objects.filter(recruit_user_id=user, recruit_join_id=join_id)
+    
+        # 존재한다면
+        if recruit.exists():
+            return Response({"message": "이미 해당 모집글에 신청되었습니다."}, status=status.HTTP_302_FOUND)
+        else:
+            Recruit_Article.objects.create(recruit_user_id=user, recruit_join_id=join_id)
+            return Response({"message": "해당 모집글에 신청되었습니다."}, status=status.HTTP_201_CREATED)
+        
+    
+class RecruitedArticleView(APIView):
+    
+    # 본인이 작성한 모집게시글에 대한 신청 내역 조회하기
+    def get(self, request):
+        user = request.user.id
+        myjoins_list = []
+        myjoins = Join_Article.objects.filter(join_author_id=user)  #본인이 작성한 모집게시글들
+        # myjoin_list = [1, 2] 이런식으로....
+        for i in range(len(myjoins)):
+            myjoins_list.append(myjoins[i].id)
+        #myjoins의 join id와 Recruit_Article의 recruit_join이 일치하는
+        #예를들어 join id가 1인 Recruit_Article 찾고, join id가 2인 Recruit_Article 찬고 이런 식으로...,
+        
+        if len(myjoins_list) > 0:
+            results = Recruit_Article.objects.filter(recruit_join_id=myjoins_list[0])
+            for j in range(1, len(myjoins_list)):
+                results = results.union(Recruit_Article.objects.filter(recruit_join_id=myjoins_list[j]))
+                                        
+        if not results.exists():
+                return Response({"message": "작성한 모집글에 대한 신청게시글을 찾을 수 없습니다."}, status=status.HTTP_404_NOT_FOUND)
+        elif results.exists():
+                serializer = RecruitSerializer(results, many=True)
+                return Response(serializer.data, status=status.HTTP_200_OK) 
+
+
+class RecruitedChangeArticleView(APIView):          
+    # 본인이 작성한 모집게시글에 대한 신청 내역 상태 변경하기        
+    def patch(self, request, recruit_id):
+        recruitpatch = get_object_or_404(Recruit_Article, id=recruit_id)  
+        print(recruitpatch)
+        #"id": 3,
+        #"recruit_status": false,
+        #"recruit_time": "2022-12-13T11:22:50.661067+09:00",
+        #"recruit_user": 1,
+        #"recruit_join": 3
+        myjoin = get_object_or_404(Join_Article, id=recruitpatch.recruit_join.id)  #신청게시글에 적혀있는 모집게시물
+        print(myjoin)
+        # 요청자가 게시글 작성자일 경우에만 수정 가능
+        if request.user == myjoin.join_author:  #신청게시글에 적혀있는 모집게시글의 작성자가 현재사용자라면
+            recruitpatch.recruit_status = True
+            recruitpatch.save()
+            return Response("신청상태가 확정으로 변경되었습니다.", status=status.HTTP_200_OK)
+        else:
+            return Response("권한이 없습니다.", status=status.HTTP_403_FORBIDDEN)
