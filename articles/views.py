@@ -8,7 +8,7 @@ from users.models import User
 import random
 
 
-from articles.serializers import FestivalListSerializer, JoinDetailSerializer, JoinCommentCreateSerializer, JoinCommentSerializer, JoinListSerializer, FestivalSerializer, ReviewSerializer, ReviewCreateSerializer, ReviewCommentSerializer, ReviewCommentCreateSerializer, JoinCreateSerializer, BookMarkSerializer
+from articles.serializers import FestivalListSerializer, JoinDetailSerializer, JoinCommentCreateSerializer, JoinCommentSerializer, JoinListSerializer, FestivalSerializer, ReviewSerializer, ReviewCreateSerializer, ReviewCommentSerializer, ReviewCommentCreateSerializer, JoinCreateSerializer, BookMarkSerializer, RecruitSerializer
 userregion_arr = [""]
 region_arr = ["서울시", "부산시", "대구시", "인천시", "광주시", "대전시", "울산시", "세종시", "경기도", "강원도", "충청북도", "충청남도", "전라북도", "전라남도", "경상북도", "경상남도", "제주도"]
 
@@ -276,6 +276,14 @@ class JoinCommentDetailView(APIView):
 
 # 신청게시글 
 class RecruitArticleView(APIView):
+    # 본인이 작성한(recruit_user_id가 사용자인) recruit 게시글 상태보기
+    def get(self, request):
+        user = request.user.id  #현재 사용자
+        recruit = Recruit_Article.objects.filter(recruit_user_id=user)
+        serializer = RecruitSerializer(recruit, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+        
+        
     # 신청게시글 생성 메서드
     def post(self, request, join_id):
         #현재사용자 객체

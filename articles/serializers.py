@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from articles.models import Festival_Article, Review, Review_Comment, Bookmark, Join_Article, Comment
+from articles.models import Festival_Article, Review, Review_Comment, Bookmark, Join_Article, Comment, Recruit_Article
 
 # 축제 리스트 serial
 class FestivalListSerializer(serializers.ModelSerializer):
@@ -94,4 +94,9 @@ class JoinDetailSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Join_Article
+        fields = "__all__"
+        
+class RecruitSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Recruit_Article
         fields = "__all__"
