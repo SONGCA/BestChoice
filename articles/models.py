@@ -25,7 +25,7 @@ class Join_Article(models.Model):
     join_count = models.IntegerField(default=1)  #모집 인원
     join_desc = models.TextField()  #모집 설명
     join_period = models.DateField()  #모집 마감일
-    join_status = models.BooleanField(default=False) # true일때 모집중, false 종료
+    join_status = models.BooleanField(default=True) # true일때 모집중, false 종료
     join_created_at = models.DateTimeField(auto_now_add=True) #모집 게시글 생성 시간
     join_updated_at = models.DateTimeField(auto_now= True) #모집 게시글 수정 시간
 
@@ -33,7 +33,6 @@ class Join_Article(models.Model):
 class Recruit_Article(models.Model):
     recruit_user = models.ForeignKey(User, verbose_name="작성자", on_delete=models.CASCADE)  #신청게시글 작성자
     recruit_join = models.ForeignKey(Join_Article, verbose_name="모집", on_delete=models.CASCADE)  #신청게시글 해당 모집글
-    recruit_introduce = models.TextField()  #신청게시글 자기소개
     recruit_status = models.BooleanField(default=False)   #신청게시글 상태(true이면 확정, false이면 미정)
     recruit_time = models.DateTimeField(auto_now_add=True)  #신청게시글 생성시간
 
