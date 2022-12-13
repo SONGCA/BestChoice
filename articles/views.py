@@ -300,3 +300,49 @@ class RecruitArticleView(APIView):
         else:
             Recruit_Article.objects.create(recruit_user_id=user, recruit_join_id=join_id)
             return Response({"message": "해당 모집글에 신청되었습니다."}, status=status.HTTP_201_CREATED)
+        
+    
+class RecruitedArticleView(APIView):
+    
+    # 본인이 작성한 모집게시글에 대한 신청 내역 조회하기
+    def get(self, request):
+        user = request.user.id
+        myjoins_list = []
+        myjoins = Join_Article.objects.filter(join_author_id=user)  #본인이 작성한 모집게시글들
+        # myjoin_list = [1, 2] 이런식으로....
+        for i in range(len(myjoins)):
+            myjoins_list.append(myjoins[i].id)
+        #myjoins의 join id와 Recruit_Article의 recruit_join이 일치하는
+        #예를들어 join id가 1인 Recruit_Article 찾고, join id가 2인 Recruit_Article 찬고 이런 식으로...,
+        
+        if len(myjoins_list) > 0:
+            results = Recruit_Article.objects.filter(recruit_join_id=myjoins_list[0])
+            for j in range(1, len(myjoins_list)):
+                results = results.union(Recruit_Article.objects.filter(recruit_join_id=myjoins_list[j]))
+                                        
+        if not results.exists():
+                return Response({"message": "작성한 모집글에 대한 신청게시글을 찾을 수 없습니다."}, status=status.HTTP_404_NOT_FOUND)
+        elif results.exists():
+                serializer = RecruitSerializer(results, many=True)
+                return Response(serializer.data, status=status.HTTP_200_OK) 
+
+
+class RecruitedChangeArticleView(APIView):          
+    # 본인이 작성한 모집게시글에 대한 신청 내역 상태 변경하기        
+    def patch(self, request, recruit_id):
+        recruitpatch = get_object_or_404(Recruit_Article, id=recruit_id)  
+        print(recruitpatch)
+        #"id": 3,
+        #"recruit_status": false,
+        #"recruit_time": "2022-12-13T11:22:50.661067+09:00",
+        #"recruit_user": 1,
+        #"recruit_join": 3
+        myjoin = get_object_or_404(Join_Article, id=recruitpatch.recruit_join.id)  #신청게시글에 적혀있는 모집게시물
+        print(myjoin)
+        # 요청자가 게시글 작성자일 경우에만 수정 가능
+        if request.user == myjoin.join_author:  #신청게시글에 적혀있는 모집게시글의 작성자가 현재사용자라면
+            recruitpatch.recruit_status = True
+            recruitpatch.save()
+            return Response("신청상태가 확정으로 변경되었습니다.", status=status.HTTP_200_OK)
+        else:
+            return Response("권한이 없습니다.", status=status.HTTP_403_FORBIDDEN)
