@@ -24,7 +24,7 @@ class Join_Article(models.Model):
     join_title = models.CharField(max_length=20)  #모집 제목
     join_count = models.IntegerField(default=1)  #모집 인원
     join_desc = models.TextField()  #모집 설명
-    join_period = models.DateField()  #모집 마감일
+    join_period = models.DateTimeField()  #모집 마감일
     join_status = models.BooleanField(default=True) # true일때 모집중, false 종료
     join_created_at = models.DateTimeField(auto_now_add=True) #모집 게시글 생성 시간
     join_updated_at = models.DateTimeField(auto_now= True) #모집 게시글 수정 시간

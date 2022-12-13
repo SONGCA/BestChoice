@@ -95,28 +95,3 @@ class JoinDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = Join_Article
         fields = "__all__"
-
-
-
-
-# class CommentSerializer(serializers.ModelSerializer):
-#     user = serializers.SerializerMethodField()
-
-#     def get_user(self, obj):
-#         return obj.user.nickname
-    
-#     class Meta:
-#         model = Comment
-#         fields = '__all__'
-
-
-# class ArticleSerializer(serializers.ModelSerializer):
-#     user = serializers.SerializerMethodField()
-#     comment_set = CommentSerializer(many=True)
-    
-#     def get_user(self, obj):
-#         return obj.user.email
-    
-#     class Meta:
-#         model = Article
-#         fields = '__all__'
