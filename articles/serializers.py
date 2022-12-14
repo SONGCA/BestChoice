@@ -92,10 +92,14 @@ class JoinCommentCreateSerializer(serializers.ModelSerializer):
 
 class JoinDetailSerializer(serializers.ModelSerializer):
     join_author = serializers.SerializerMethodField()
+    join_festival = serializers.SerializerMethodField()
     comments = JoinCommentSerializer(many=True)
 
     def get_join_author(self, obj):
         return obj.join_author.user_nickname
+
+    def get_join_festival(self, obj):
+        return obj.join_festival.festival_title
     
     class Meta:
         model = Join_Article
