@@ -48,7 +48,7 @@ class Comment(models.Model):
 
 # 축제게시글 북마크 모델
 class Bookmark(models.Model):
-    bookmark_user = models.ForeignKey(User, on_delete=models.CASCADE)  # 북마크한 사용자
+    bookmark_user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="bookmark_set")  # 북마크한 사용자
     bookmark_festival = models.ForeignKey(Festival_Article, on_delete=models.CASCADE)  # 북마크한 축제게시글
 
 # 리뷰 게시글

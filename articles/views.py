@@ -17,9 +17,7 @@ region_arr = ["서울시", "부산시", "대구시", "인천시", "광주시", "
 class RecommendView(APIView):
     def get(self, request):
         userid = request.user  #현재 사용자
-        print(userid)
         userregion = userid.user_address  #사용자의 주소(선호지역? 경기도)
-        print(userregion)
         festivals = Festival_Article.objects.all().filter(festival_region__contains=region_arr[int(userregion)-1])  #추천받고 싶은 지역 기준                                           
         recommend_list = []
         nums = random.sample(range(0, len(festivals)), 8)  # 랜덤한 8개 숫자 뽑기
