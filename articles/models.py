@@ -31,8 +31,8 @@ class Join_Article(models.Model):
 
 # 신청게시글 모델
 class Recruit_Article(models.Model):
-    recruit_user = models.ForeignKey(User, verbose_name="작성자", on_delete=models.CASCADE)  #신청게시글 작성자
-    recruit_join = models.ForeignKey(Join_Article, verbose_name="모집", on_delete=models.CASCADE)  #신청게시글 해당 모집글
+    recruit_user = models.ForeignKey(User, verbose_name="작성자", on_delete=models.CASCADE, related_name="recruit_user_set")  #신청게시글 작성자
+    recruit_join = models.ForeignKey(Join_Article, verbose_name="모집", on_delete=models.CASCADE, related_name="recruit_join_set")  #신청게시글 해당 모집글
     recruit_status = models.BooleanField(default=False)   #신청게시글 상태(true이면 확정, false이면 미정)
     recruit_time = models.DateTimeField(auto_now_add=True)  #신청게시글 생성시간
 
