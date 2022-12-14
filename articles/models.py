@@ -19,7 +19,7 @@ class Festival_Article(models.Model):
 
  # 모집게시글 모델
 class Join_Article(models.Model):
-    join_author = models.ForeignKey(User,  verbose_name="작성자", on_delete=models.CASCADE)  #모집 작성자
+    join_author = models.ForeignKey(User, verbose_name="작성자", on_delete=models.CASCADE)  #모집 작성자
     join_festival = models.ForeignKey(Festival_Article, verbose_name="축제", on_delete=models.CASCADE)  #모집 축제
     join_title = models.CharField(max_length=20)  #모집 제목
     join_count = models.IntegerField(default=1)  #모집 인원
