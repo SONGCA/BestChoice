@@ -212,6 +212,8 @@ class JoinArticleCreate(APIView):
 class JoinArticleDetailView(APIView):
     def get(self, request, join_id):
         joinview = get_object_or_404(Join_Article, id=join_id)
+        joinview.join_hits = joinview.join_hits +1
+        joinview.save()
         serializer = JoinDetailSerializer(joinview)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
