@@ -24,26 +24,14 @@ class FestivalSerializer(serializers.ModelSerializer):
 # 리뷰 댓글 리스트 serial
 class ReviewCommentSerializer(serializers.ModelSerializer):
     review_user = serializers.SerializerMethodField()
-
+    
     def get_review_user(self, obj):
         return obj.review_user.user_nickname
-
+    
     class Meta:
         model = Review_Comment
         fields = '__all__'
         
-# 리뷰 댓글 작성 serial
-class ReviewCommentCreateSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Review_Comment
-        fields= ("review_comment",)
-          
-# 리뷰 작성, 수정 serial
-class ReviewCreateSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Review
-        fields = ("review_title", "review_desc", "image")
-
 # 리뷰 리스트 serial
 class ReviewSerializer(serializers.ModelSerializer):
     review_author = serializers.SerializerMethodField()
@@ -55,10 +43,21 @@ class ReviewSerializer(serializers.ModelSerializer):
     class Meta:
         model = Review
         fields = '__all__'
+        
+# 리뷰 작성, 수정 serial
+class ReviewCreateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Review
+        fields = ("review_title", "review_desc", 'image')
+        
+# 리뷰 댓글 작성 serial
+class ReviewCommentCreateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Review_Comment
+        fields= ("review_comment",)
 
 #모집게시글 생성/수정 serial
 class JoinCreateSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = Join_Article
         fields = ("join_title", "join_count", "join_desc", "join_period",)
