@@ -1,5 +1,5 @@
 # 축제어때
-22.11.22.~11.28. 파이널 프로젝트 축제어때<br>
+파이널 프로젝트 축제어때<br>
 front repo 👉 https://github.com/Naerumii/BestChoice_front
 
 ## 프로젝트 목표
