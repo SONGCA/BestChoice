@@ -94,7 +94,7 @@ front repo 👉 https://github.com/Naerumii/BestChoice_front
 
 
 ## 시연 영상
-<https://www.youtube.com/watch?v=UzneqBcOHOY>
+<https://www.youtube.com/watch?v=aBgFLqNhcow>
 
 ## Good & Weak
 
