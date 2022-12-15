@@ -45,6 +45,9 @@ front repo 👉 https://github.com/Naerumii/BestChoice_front
 - [ ] 테스트 코드를 작성
 - [ ] 카카오맵 기능 구현
 - [ ] 전화번호 or 이메일 인증 구현
+
+### 트러블슈팅
+<https://github.com/Naerumii/BestChoice/wiki/%ED%8A%B8%EB%9F%AC%EB%B8%94%EC%8A%88%ED%8C%85>
  
 ## 화면 설계
 ![회원가입](https://user-images.githubusercontent.com/42130343/207764191-f523af14-0003-4ad7-94a6-2e4d70f30f73.png)
