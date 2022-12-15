@@ -176,8 +176,8 @@ class ReviewCommentView(APIView):
 
 # 댓글 수정하기, 삭제하기
 class ReviewCommentDetailView(APIView):
-    def put(self, request, review_id, review_comment_id):
-        review_comment = get_object_or_404(Review_Comment, id=review_comment_id)
+    def put(self, request, review_id, comment_id):
+        review_comment = get_object_or_404(Review_Comment, id=comment_id)
         if request.user == review_comment.review_user:
             serializer = ReviewCommentCreateSerializer(review_comment, data=request.data)
             if serializer.is_valid():
@@ -187,7 +187,7 @@ class ReviewCommentDetailView(APIView):
                 return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         else:
             return Response("권한이 없습니다!", status=status.HTTP_403_FORBIDDEN)
-        
+    
     def delete(self, request, review_id, review_comment_id):
         review_comment = get_object_or_404(Review_Comment, id=review_comment_id)
         if request.user == review_comment.review_user:
