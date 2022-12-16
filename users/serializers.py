@@ -1,7 +1,8 @@
 from rest_framework import serializers
 from users.models import User
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
-from articles.serializers import BookMarkSerializer, RecruitSerializer
+from festivals.serializers import BookMarkSerializer
+from recruits.serializers import RecruitSerializer
 
 
 # 회원가입과 회원정보수정에서 사용할 serial
