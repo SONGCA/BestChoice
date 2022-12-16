@@ -59,11 +59,13 @@ class RecruitedArticleView(APIView):
             for j in range(1, len(myjoins_list)):
                 results = results.union(Recruit_Article.objects.filter(recruit_join_id=myjoins_list[j]).exclude(recruit_status=2).distinct())
                                         
-        if not results.exists():
-                return Response({"message": "작성한 모집글에 대한 신청게시글을 찾을 수 없습니다."}, status=status.HTTP_404_NOT_FOUND)
-        elif results.exists():
-                serializer = RecruitSerializer(results, many=True)
-                return Response(serializer.data, status=status.HTTP_200_OK) 
+            if not results.exists():
+                    return Response({"message": "작성한 모집글에 대한 신청게시글을 찾을 수 없습니다."}, status=status.HTTP_404_NOT_FOUND)
+            elif results.exists():
+                    serializer = RecruitSerializer(results, many=True)
+                    return Response(serializer.data, status=status.HTTP_200_OK)
+        else:
+            return Response({"message": "작성한 모집글에 대한 신청게시글을 찾을 수 없습니다."}, status=status.HTTP_404_NOT_FOUND)
 
 
 # 신청게시글 상태를 변경하는 뷰(patch)
