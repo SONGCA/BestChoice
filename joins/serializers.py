@@ -42,18 +42,18 @@ class JoinCreateSerializer(serializers.ModelSerializer):
         model = Join_Article
         fields = ("join_title", "join_count", "join_desc", "join_period",)
         
+# 모집게시글 상세보기 serial
+class JoinDetailSerializer(serializers.ModelSerializer):
+    join_author = serializers.SerializerMethodField()
+    join_festival = serializers.SerializerMethodField()
+    comments = JoinCommentSerializer(many=True)
 
-# class JoinDetailSerializer(serializers.ModelSerializer):
-#     join_author = serializers.SerializerMethodField()
-#     join_festival = serializers.SerializerMethodField()
-#     comments = JoinCommentSerializer(many=True)
+    def get_join_author(self, obj):
+        return obj.join_author.user_nickname
 
-#     def get_join_author(self, obj):
-#         return obj.join_author.user_nickname
-
-#     def get_join_festival(self, obj):
-#         return obj.join_festival.festival_title
+    def get_join_festival(self, obj):
+        return obj.join_festival.festival_title
     
-#     class Meta:
-#         model = Join_Article
-#         fields = "__all__"
+    class Meta:
+        model = Join_Article
+        fields = "__all__"

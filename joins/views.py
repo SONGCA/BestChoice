@@ -4,7 +4,7 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.generics import get_object_or_404
 from joins.models import Join_Article, Comment
-from joins.serializers import JoinCommentCreateSerializer, JoinCommentSerializer, JoinSerializer, JoinCreateSerializer
+from joins.serializers import JoinCommentCreateSerializer, JoinCommentSerializer, JoinSerializer, JoinCreateSerializer, JoinDetailSerializer
 
 
 #모집 작성 및 불러오기 뷰(get, post)
@@ -29,7 +29,7 @@ class JoinArticleDetailView(APIView):
         joinview = get_object_or_404(Join_Article, id=join_id)
         joinview.join_hits = joinview.join_hits +1
         joinview.save()
-        serializer = JoinSerializer(joinview)
+        serializer = JoinDetailSerializer(joinview)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def patch(self, request, join_id):
