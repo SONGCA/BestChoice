@@ -10,7 +10,7 @@ from joins.serializers import JoinCommentCreateSerializer, JoinCommentSerializer
 #모집 작성 및 불러오기 뷰(get, post)
 class JoinArticleView(APIView):
     def get(self, request):
-        join = Join_Article.objects.all().order_by("-join_created_at")
+        join = Join_Article.objects.all().order_by("-join_status", "-join_created_at")
         serializer = JoinSerializer(join, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
     
