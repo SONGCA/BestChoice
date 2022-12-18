@@ -7,7 +7,7 @@ import django
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "bestchoice.settings")
 django.setup()
 # model import
-from articles.models import *
+from festivals.models import *
 
 #읽어들일 csv 디렉토리를 각 변수에 담는다.
 festival = 'festival_list.csv'
