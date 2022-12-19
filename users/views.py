@@ -6,19 +6,26 @@ from rest_framework_simplejwt.views import (
     TokenObtainPairView,
 )
 from users.models import User
+from users.serializers import CustomTokenObtainPairSerializer, UserSerializer, UserProfileSerializer
 
 # 회원가입 view
 
-from users.serializers import CustomTokenObtainPairSerializer, UserSerializer, UserProfileSerializer
 
 class UserView(APIView):
     def post(self, request):
-        serializer = UserSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response({"message":"가입완료"}, status=status.HTTP_201_CREATED)
+        if User.objects.filter(email = request.data["email"]):
+            return Response({"message" : "이미 가입된 이메일입니다. "}, status=status.HTTP_400_BAD_REQUEST)
+        
+        elif User.objects.filter(user_nickname = request.data["user_nickname"]):
+            return Response({"message" : "중복된 닉네임입니다. "}, status=status.HTTP_400_BAD_REQUEST)
+        
         else:
-            return Response({"message":f"${serializer.errors}"}, status=status.HTTP_400_BAD_REQUEST)
+            serializer = UserSerializer(data=request.data)
+            if serializer.is_valid():
+                serializer.save()
+                return Response({"message":"회원가입이 정상적으로 완료되었습니다!"}, status=status.HTTP_201_CREATED)
+            else:
+                return Response({"message":f"${serializer.errors}"}, status=status.HTTP_400_BAD_REQUEST)
 
 class ProfileView(APIView):
     def get(self, request, user_id):
