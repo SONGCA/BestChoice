@@ -14,10 +14,10 @@ from users.serializers import CustomTokenObtainPairSerializer, UserSerializer, U
 class UserView(APIView):
     def post(self, request):
         if User.objects.filter(email = request.data["email"]):
-            return Response({"message" : "이미 가입된 계정입니다. "}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"message" : "이미 가입된 이메일입니다. "}, status=status.HTTP_400_BAD_REQUEST)
         
         elif User.objects.filter(user_nickname = request.data["user_nickname"]):
-            return Response({"message" : "이미 가입된 계정입니다. "}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"message" : "중복된 닉네임입니다. "}, status=status.HTTP_400_BAD_REQUEST)
         
         else:
             serializer = UserSerializer(data=request.data)
