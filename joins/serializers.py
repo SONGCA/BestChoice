@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from joins.models import Join_Article, Comment
 from festivals.serializers import FestivalListSerializer
+from recruits.serializers import RecruitSerializer
 
 
 # 모집 댓글 리스트 serial
@@ -47,6 +48,7 @@ class JoinDetailSerializer(serializers.ModelSerializer):
     join_author = serializers.SerializerMethodField()
     join_festival = serializers.SerializerMethodField()
     comments = JoinCommentSerializer(many=True)
+    recruit_join_set = RecruitSerializer(many=True)
 
     def get_join_author(self, obj):
         return obj.join_author.user_nickname
