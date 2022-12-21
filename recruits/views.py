@@ -10,7 +10,7 @@ import random
 
 # 신청게시글 조회 뷰(get, post)
 class RecruitArticleView(APIView):
-    # 본인이 작성한(recruit_user_id가 사용자인) recruit 게시글 상태보기 -> 내가 신청한 내역을 보기 위해
+    # 본인이 작성한(recruit_user_id가 사용자인) recruit 게시글 상태보기 -> 내가 신청한 내역을 보기 위해 왼쪽
     def get(self, request):
         user = request.user.id  #현재 사용자
         recruit = Recruit_Article.objects.filter(recruit_user_id=user).order_by("-recruit_time")
@@ -23,6 +23,7 @@ class RecruitArticleView(APIView):
         user = request.user.id
         #현재축제게시글 객체
         
+
         #현재사용자, 모집게시글 아이디를 이용해 recruit article 뽑아내기
         recruit = Recruit_Article.objects.filter(recruit_user_id=user, recruit_join_id=join_id)
     
@@ -42,7 +43,7 @@ class RecruitDetailView(APIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
         
 
-# 본인이 작성한 모집게시글에 대한 신청 내역 조회하기(get)
+# 본인이 작성한 모집게시글에 대한 신청 내역 조회하기(get) 오른쪽
 class RecruitedArticleView(APIView):
     def get(self, request):
         user = request.user.id
