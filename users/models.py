@@ -35,10 +35,10 @@ class User(AbstractBaseUser, PermissionsMixin):
     )
         
     email = models.EmailField(max_length=255, unique=True)
-    user_nickname = models.CharField(max_length=20, blank=False)
+    user_nickname = models.CharField(max_length=20, blank=False, unique=True)
     user_phone = models.IntegerField(blank=False)
     user_gender = models.IntegerField(choices=GENDER_CHOICES, default=2)
-    user_introduce = models.CharField(max_length=40, blank=True, null=True)
+    user_introduce = models.CharField(max_length=50, blank=True, null=True)
     user_profile_img = models.ImageField(blank=True, upload_to="profile_img/", default="profile_img/profile.jpeg", null=True)
     user_birth = models.DateField(null=True)
     user_address = models.CharField(max_length=20, blank=False) #IntegerField와 CharField 중 어떤 방식이 나을지 논의 필요

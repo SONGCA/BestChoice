@@ -25,14 +25,11 @@ class UserSerializer(serializers.ModelSerializer):
         user.set_password(password)
         user.save()
         return user
-
-    def update(self, validated_data):
-        user = super().create(validated_data)
-        password = user.password
-        user.set_password(password)
-        user.save()
-        return user
-
+    
+class UserEditSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ["user_nickname", "user_introduce", "user_address", "user_phone", "user_profile_img"]
 
 # 로그인 시 사용할 serial
 class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
