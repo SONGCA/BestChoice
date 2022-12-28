@@ -188,7 +188,7 @@ front repo 👉 https://github.com/Naerumii/BestChoice_front
 ## ⭐ DB 설계
 ![image](https://user-images.githubusercontent.com/112190737/209777388-0395fad5-279b-40aa-85e3-a52ded594b75.png)
 
-## API 설계
+## ⭐ API 설계
 ![image](https://user-images.githubusercontent.com/112190737/209777620-ed2fbb94-5510-466a-8b93-a1ff481c4848.png)
 ![image](https://user-images.githubusercontent.com/112190737/209777763-927070e2-9533-4c95-a23c-dedcca6451bc.png)
 ![image](https://user-images.githubusercontent.com/112190737/209777804-a273f815-cf08-4866-b25e-51e27cd5b1fa.png)
