@@ -27,6 +27,7 @@ front repo 👉 https://github.com/Naerumii/BestChoice_front
    - 축제 모집게시글 신청기능 : 이승연, 정유준<br>
    - 리뷰게시글 : 송창주, 이효정<br>
    - 리뷰게시글 댓글 : 송창주, 이효정
+- 배포 : 이효정
 
 ## ⭐ 기능 
 <details>
